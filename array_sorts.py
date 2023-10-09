@@ -80,16 +80,16 @@ def merge_sort(lista):
             j += 1
             k += 1
 
-def get_time(arg):
+def get_time(funcao, lista):
     inicio = time.time()
-    arg
+    funcao(lista)
     fim = time.time()
     return fim - inicio
 
 def continuar():
     val = 0
     while val != 1:
-        c = input("Iniciar ordenação de lista? S ou N:").upper()
+        c = input("Iniciar ordenação de lista? S ou N\nR:").upper()
         if c != 'S' and c != 'N':
             print("Digite S ou N")
         else:
@@ -108,19 +108,19 @@ def ordenação():
         match alg:
             case '1':
                 sort = 'bubble'
-                tempo = get_time(bubble_sort(listaCopy))
+                tempo = get_time(bubble_sort, listaCopy)
                 val = 1
             case '2':
                 sort = 'selection'
-                tempo = get_time(selection_sort(listaCopy))
+                tempo = get_time(selection_sort, listaCopy)
                 val = 1
             case '3':
                 sort = 'insertion'
-                tempo = get_time(insertion_sort(listaCopy))
+                tempo = get_time(insertion_sort, listaCopy)
                 val = 1
             case '4':
                 sort = 'merge'
-                tempo = get_time(merge_sort(listaCopy))
+                tempo = get_time(merge_sort, listaCopy)
                 val = 1
             case _:
                 print("Digite o algoritmo que você deseja usar para ordenar:\n"
@@ -183,6 +183,48 @@ def mostrar_lista(lista):
                     print("Escolha uma opção válida")
     return lista
 
+def calcular_media(lista):
+    N = len(lista)
+    somatorio = 0
+    for i in range(N):
+        somatorio += lista[i]
+    media_aritmetica = somatorio / N
+    return media_aritmetica
+
+def printar_tempos(key):
+    lista = tempo[key]
+    print(key)
+    for i in lista:
+        print(f"Tempo: {i:.2f}")
+
+def printar_media(key):
+    lista = tempo[key]
+    try:
+        print(f"Media {key}: {calcular_media(lista):.2f}")
+    except ZeroDivisionError:
+        print("Não há numeros sufientes para calcular a média")
+
+def quest_print_all():
+    val = 0
+    while val != 1:
+        quest = input("Você quer olhar todos os tempos? S ou N\nR:").upper()
+        match quest:
+            case 'S':
+                printar_tempos("bubble")
+                printar_media("bubble")
+                printar_tempos("selection")
+                printar_media("selection")
+                printar_tempos("insertion")
+                printar_media("insertion")
+                printar_tempos("merge")
+                printar_media("merge")
+                val = 1
+            case 'N':
+                val = 1
+            case _:
+                print("Escolha uma opção válida")
+
+
 # Principal
 tempo = {"bubble": [], "selection": [], "insertion": [], "merge": []} # Representação de um banco de dados
 lista = [] # Representação de um banco de dados
@@ -192,18 +234,20 @@ while c == 'S':
 
     # Escolhendo a lista a ser trabalhada e a fazendo uma copia da mesma para a execução das ordenações
     lista = mostrar_lista(lista)
-    listaCopy = lista
+    listaCopy = lista # Cópia da lista principal
 
     # Guardando tempo na lista respectiva dentro do dicionário
     tipo_tempo = ordenação() # Recuperando a tupla com a string referente a key do discionário e o tempo que demorou para ordenar.
     tempo[tipo_tempo[0]].append(tipo_tempo[1]) # Inserindo o tempo no dicionário no seu respectivo lugar
     # A linha acima, na teoria, é para simular a inserção no banco de dados
 
+    print(f"Tempo de execução: {tipo_tempo[1]:.2f}")
+
     # Restaurando a lista para o formato não ordenado
     listaCopy = lista
 
     # Saida dos tempos:
-    print(tempo)
+    quest_print_all()
 
     # Finalizar ou continuar aplicação
     c = continuar()
